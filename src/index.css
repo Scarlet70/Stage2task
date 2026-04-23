@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap");
+@import "tailwindcss";
+
+:root {
+    --APP-BG-COLOR: #ffffff;
+    --PRIMARY-TEXT-COLOR: #1b1b1b;
+}
+
+body {
+    font-family: "League Spartan", sans-serif;
+    color: var(--PRIMARY-TEXT-COLOR);
+    width: 100%;
+}
+
+form input,
+select {
+    border: 1px solid #dfe3fa;
+    padding: 0.4rem;
+    border-radius: 0.2rem;
+    color: #1b1b1b;
+}
+
+input[type="date"],
+select {
+    color: #777f98;
+}
+
+#payment-terms {
+    appearance: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+form label {
+    color: #7e88c3;
+    font-size: 0.9rem;
+}
+
+.input-field {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.select-wrapper select {
+    appearance: none;
+    padding-right: 35px;
+}
+
+.icon {
+    position: absolute;
+    right: 10px;
+    top: 45%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+#x {
+    width: 20px;
+    height: 20px;
+    background: #ffbc03;
+}
+
+th,
+td {
+    padding: 1rem;
+}
+
+tfoot tr td {
+    padding: 2rem;
+}
+
+td {
+    text-align: center;
+    font-weight: 700;
+}
+
+.row-left {
+    text-align: left;
+}
+
+.row-right {
+    text-align: right;
+}
+
+@media screen and (max-width: 600px) {
+    th,
+    td {
+        padding: 0.5rem;
+    }
+}
