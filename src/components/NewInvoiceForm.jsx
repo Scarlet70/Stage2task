@@ -67,6 +67,13 @@ const NewInvoiceForm = () => {
         const newDisplayId = `INV-00${newId}`;
         const currentDate = new Date().toISOString().split("T")[0];
 
+        const items = newInvoiceData.items.map((item) => ({
+            id: item.id ?? crypto.randomUUID(),
+            name: item.name,
+            quantity: Number(item.quantity) || 0,
+            price: Number(item.price) || 0,
+        }));
+
         const newInvoice = {
             id: newId,
             displayId: newDisplayId,
@@ -76,22 +83,7 @@ const NewInvoiceForm = () => {
             dueDate: newInvoiceData.dueDate,
             status: "Pending",
             projectDescription: newInvoiceData.projectDescription,
-            items: [
-                {
-                    name:
-                        newInvoiceData.items[
-                            Math.max(0, newInvoiceData.items.length - 2)
-                        ]?.name || "",
-                    quantity:
-                        newInvoiceData.items[
-                            Math.max(0, newInvoiceData.items.length - 2)
-                        ]?.quantity || "",
-                    price:
-                        newInvoiceData.items[
-                            Math.max(0, newInvoiceData.items.length - 2)
-                        ]?.price || "",
-                },
-            ],
+            items,
             clientAddress: {
                 street: newInvoiceData.clientAddress.street,
                 city: newInvoiceData.clientAddress.city,
@@ -106,15 +98,60 @@ const NewInvoiceForm = () => {
                 country: newInvoiceData.companyAddress.country,
             },
             paymentTerms: newInvoiceData.paymentTerms,
+            total: evalTotal(items),
         };
-
-        newInvoice.total = evalTotal([...newInvoiceData.items]);
 
         const newInvoices = [...invoices, newInvoice];
 
         setInvoices(newInvoices);
+        setNewInvoiceData({
+            clientName: "",
+            email: "",
+            dueDate: "",
+            status: "Pending",
+            projectDescription: "",
+            items: [
+                {
+                    id: crypto.randomUUID(),
+                    name: "",
+                    quantity: 1,
+                    price: 0,
+                },
+            ],
+            clientAddress: {
+                street: "",
+                city: "",
+                postCode: "",
+                country: "",
+            },
+            companyName: "",
+            companyAddress: {
+                street: "",
+                city: "",
+                postCode: "",
+                country: "",
+            },
+            paymentTerms: "",
+        });
+    };
 
-        console.log(newInvoice);
+    const handleItemChange = (id, field, value) => {
+        setNewInvoiceData((prev) => ({
+            ...prev,
+            items: prev.items.map((item) =>
+                item.id === id
+                    ? {
+                          ...item,
+                          [field]:
+                              value === undefined || value === ""
+                                  ? field === "name"
+                                      ? ""
+                                      : 0
+                                  : value,
+                      }
+                    : item,
+            ),
+        }));
     };
 
     const addNewItem = () => {
@@ -128,6 +165,7 @@ const NewInvoiceForm = () => {
             setIsItemNameError(true);
             setItemNameErrorMsg("Enter the Item Name!");
             canAddItem = false;
+            return;
         } else {
             setIsItemNameError(false);
             setItemNameErrorMsg("");
@@ -142,6 +180,7 @@ const NewInvoiceForm = () => {
             setIsItemQtyError(true);
             setItemQtyErrorMsg("Value must be > 1");
             canAddItem = false;
+            return;
         } else {
             setIsItemQtyError(false);
             setItemQtyErrorMsg("");
@@ -156,6 +195,7 @@ const NewInvoiceForm = () => {
             setIsItemPriceError(true);
             setItemPriceErrorMsg("Value must be > 1");
             canAddItem = false;
+            return;
         } else {
             setIsItemPriceError(false);
             setItemPriceErrorMsg("");
@@ -163,7 +203,12 @@ const NewInvoiceForm = () => {
         }
 
         if (canAddItem) {
-            const newItem = { name: "", quantity: "", price: "", total: "" };
+            const newItem = {
+                id: crypto.randomUUID(),
+                name: "",
+                quantity: 1,
+                price: 0,
+            };
 
             setNewInvoiceData((prev) => ({
                 ...prev,
@@ -357,7 +402,7 @@ const NewInvoiceForm = () => {
                             <input
                                 type="text"
                                 id="company-address"
-                                value={newInvoiceData.companyAddress.street}
+                                value={newInvoiceData.companyAddress?.street}
                                 onChange={(e) =>
                                     setNewInvoiceData((prev) => ({
                                         ...prev,
@@ -387,7 +432,7 @@ const NewInvoiceForm = () => {
                             <input
                                 type="text"
                                 id="sender-city"
-                                value={newInvoiceData.companyAddress.city}
+                                value={newInvoiceData.companyAddress?.city}
                                 onChange={(e) =>
                                     setNewInvoiceData((prev) => ({
                                         ...prev,
@@ -414,7 +459,7 @@ const NewInvoiceForm = () => {
                             <input
                                 type="text"
                                 id="sender-post-code"
-                                value={newInvoiceData.companyAddress.postCode}
+                                value={newInvoiceData.companyAddress?.postCode}
                                 onChange={(e) =>
                                     setNewInvoiceData((prev) => ({
                                         ...prev,
@@ -437,7 +482,7 @@ const NewInvoiceForm = () => {
                             <input
                                 type="text"
                                 id="sender-country"
-                                value={newInvoiceData.companyAddress.country}
+                                value={newInvoiceData.companyAddress?.country}
                                 onChange={(e) =>
                                     setNewInvoiceData((prev) => ({
                                         ...prev,
@@ -522,7 +567,7 @@ const NewInvoiceForm = () => {
                         <input
                             type="text"
                             id="client-address"
-                            value={newInvoiceData.clientAddress.street}
+                            value={newInvoiceData.clientAddress?.street}
                             onChange={(e) =>
                                 setNewInvoiceData((prev) => ({
                                     ...prev,
@@ -551,7 +596,7 @@ const NewInvoiceForm = () => {
                             <input
                                 type="text"
                                 id="client-city"
-                                value={newInvoiceData.clientAddress.city}
+                                value={newInvoiceData.clientAddress?.city}
                                 onChange={(e) =>
                                     setNewInvoiceData((prev) => ({
                                         ...prev,
@@ -578,7 +623,7 @@ const NewInvoiceForm = () => {
                             <input
                                 type="text"
                                 id="client-post-code"
-                                value={newInvoiceData.clientAddress.postCode}
+                                value={newInvoiceData.clientAddress?.postCode}
                                 onChange={(e) =>
                                     setNewInvoiceData((prev) => ({
                                         ...prev,
@@ -601,7 +646,7 @@ const NewInvoiceForm = () => {
                             <input
                                 type="text"
                                 id="client-country"
-                                value={newInvoiceData.clientAddress.country}
+                                value={newInvoiceData.clientAddress?.country}
                                 onChange={(e) =>
                                     setNewInvoiceData((prev) => ({
                                         ...prev,
@@ -714,154 +759,107 @@ const NewInvoiceForm = () => {
                         Item List
                     </h3>
                     <section className="flex flex-col gap-2">
-                        <article className="flex flex-nowrap gap-2 text-[#777F98] text-sm">
-                            <div className="input-group w-[45%]">
-                                <label
-                                    className="flex gap-2"
-                                    htmlFor="item-name"
-                                >
-                                    Item Name{" "}
-                                    <span className="text-red-700 text-sm">
-                                        *
+                        {newInvoiceData.items.map((item) => (
+                            <article
+                                className="flex flex-nowrap gap-2 text-[#777F98] text-sm"
+                                key={item.id}
+                            >
+                                <div className="input-group w-[45%]">
+                                    <label
+                                        className="flex gap-2"
+                                        htmlFor="item-name"
+                                    >
+                                        Item Name{" "}
+                                        <span className="text-red-700 text-sm">
+                                            *
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="item-name"
+                                        value={item.name}
+                                        onChange={(e) =>
+                                            handleItemChange(
+                                                item.id,
+                                                "name",
+                                                e.target.value,
+                                            )
+                                        }
+                                    />
+                                    {isItemNameError && (
+                                        <p className="text-xs text-red-500 text-center">
+                                            {itemNameErrorMsg}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="input-group w-[15%]">
+                                    <label
+                                        className="flex gap-2"
+                                        htmlFor="item-qty"
+                                    >
+                                        Qty.{" "}
+                                        <span className="text-red-700 text-sm">
+                                            *
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="item-qty"
+                                        min={1}
+                                        value={item.quantity}
+                                        onChange={(e) =>
+                                            handleItemChange(
+                                                item.id,
+                                                "quantity",
+                                                Number(e.target.value),
+                                            )
+                                        }
+                                    />
+                                    {isItemQtyError && (
+                                        <p className="text-xs text-red-500 text-center">
+                                            {itemQtyErrorMsg}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="input-group w-[20%]">
+                                    <label
+                                        className="flex gap-2"
+                                        htmlFor="item-price"
+                                    >
+                                        Price{" "}
+                                        <span className="text-red-700 text-sm">
+                                            *
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="item-price"
+                                        min={1}
+                                        value={item.price}
+                                        onChange={(e) =>
+                                            handleItemChange(
+                                                item.id,
+                                                "price",
+                                                Number(e.target.value),
+                                            )
+                                        }
+                                    />
+                                    {isItemPriceError && (
+                                        <p className="text-xs text-red-500 text-center">
+                                            {itemPriceErrorMsg}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="input-group w-[20%]">
+                                    <span className="text-[#7e88c3] dark:text-[#dfe3fa]">
+                                        Total
                                     </span>
-                                </label>
-                                <input
-                                    type="text"
-                                    id="item-name"
-                                    value={
-                                        newInvoiceData.items[
-                                            newInvoiceData.items.length - 1
-                                        ].name
-                                    }
-                                    onChange={(e) =>
-                                        setNewInvoiceData((prev) => {
-                                            const updatedItems = [
-                                                ...prev.items,
-                                            ];
-
-                                            const lastIndex =
-                                                updatedItems.length - 1;
-
-                                            updatedItems[lastIndex] = {
-                                                ...updatedItems[lastIndex],
-                                                name: e.target.value,
-                                            };
-
-                                            return {
-                                                ...prev,
-                                                items: updatedItems,
-                                            };
-                                        })
-                                    }
-                                />
-                                {isItemNameError && (
-                                    <p className="text-xs text-red-500 text-center">
-                                        {itemNameErrorMsg}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="input-group w-[15%]">
-                                <label
-                                    className="flex gap-2"
-                                    htmlFor="item-qty"
-                                >
-                                    Qty.{" "}
-                                    <span className="text-red-700 text-sm">
-                                        *
-                                    </span>
-                                </label>
-                                <input
-                                    type="number"
-                                    id="item-qty"
-                                    min={1}
-                                    value={
-                                        newInvoiceData.items[
-                                            newInvoiceData.items.length - 1
-                                        ].quantity
-                                    }
-                                    onChange={(e) =>
-                                        setNewInvoiceData((prev) => {
-                                            const updatedItems = [
-                                                ...prev.items,
-                                            ];
-
-                                            const lastIndex =
-                                                updatedItems.length - 1;
-
-                                            updatedItems[lastIndex] = {
-                                                ...updatedItems[lastIndex],
-                                                quantity: e.target.value,
-                                            };
-
-                                            return {
-                                                ...prev,
-                                                items: updatedItems,
-                                            };
-                                        })
-                                    }
-                                />
-                                {isItemQtyError && (
-                                    <p className="text-xs text-red-500 text-center">
-                                        {itemQtyErrorMsg}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="input-group w-[20%]">
-                                <label
-                                    className="flex gap-2"
-                                    htmlFor="item-price"
-                                >
-                                    Price{" "}
-                                    <span className="text-red-700 text-sm">
-                                        *
-                                    </span>
-                                </label>
-                                <input
-                                    type="number"
-                                    id="item-price"
-                                    min={1}
-                                    value={
-                                        newInvoiceData.items[
-                                            newInvoiceData.items.length - 1
-                                        ].price
-                                    }
-                                    onChange={(e) =>
-                                        setNewInvoiceData((prev) => {
-                                            const updatedItems = [
-                                                ...prev.items,
-                                            ];
-
-                                            const lastIndex =
-                                                updatedItems.length - 1;
-
-                                            updatedItems[lastIndex] = {
-                                                ...updatedItems[lastIndex],
-                                                price: e.target.value,
-                                            };
-
-                                            return {
-                                                ...prev,
-                                                items: updatedItems,
-                                            };
-                                        })
-                                    }
-                                />
-                                {isItemPriceError && (
-                                    <p className="text-xs text-red-500 text-center">
-                                        {itemPriceErrorMsg}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="input-group w-[20%]">
-                                <label htmlFor="item-total">Total</label>
-                                <input
-                                    type="text"
-                                    id="item-total"
-                                    value={evalTotal(newInvoiceData.items) || 0}
-                                    readOnly
-                                />
-                            </div>
-                        </article>
+                                    <div className="h-8.75 flex items-center text-black dark:text-white bg-green-500">
+                                        {item.quantity * item.price || 0}
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
                         {invoiceItemErrorMsg !== "" && (
                             <p className="text-md text-center text-red-500">
                                 {invoiceItemErrorMsg}
@@ -873,7 +871,7 @@ const NewInvoiceForm = () => {
                         onClick={addNewItem}
                     >
                         <Plus className="pb-1.5" />
-                        Save New Item
+                        Add New Item
                     </button>
                     {isFormError && (
                         <p className="text-md text-center text-red-500">

@@ -97,7 +97,7 @@ const DataProvider = ({ children }) => {
             paymentTerms: "9 Days",
         },
     ]);
-    const [isOpenNewInvoice, setIsOpenNewInvoice] = useState(false);
+    const [isOpenNewInvoice, setIsOpenNewInvoice] = useState(true);
     const [isOpenEditInvoice, setIsOpenEditInvoice] = useState(false);
     const [newInvoiceData, setNewInvoiceData] = useState({
         clientName: "",
@@ -105,7 +105,14 @@ const DataProvider = ({ children }) => {
         dueDate: "",
         status: "Pending",
         projectDescription: "",
-        items: [{ name: "", quantity: "", price: "" }],
+        items: [
+            {
+                id: crypto.randomUUID(),
+                name: "",
+                quantity: 1,
+                price: 0,
+            },
+        ],
         clientAddress: {
             street: "",
             city: "",
