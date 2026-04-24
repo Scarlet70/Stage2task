@@ -84,7 +84,7 @@ const InvoiceDetails = () => {
                             <span className="mt-1">{invoice.status}</span>
                         </span>
                     </div>
-                    <div className="hidden justify-end gap-2 sm:flex">
+                    <div className="hidden justify-end gap-2 md:flex">
                         <button
                             className="md:px-8 px-6 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#DFE3FA] hover:text-[#7E88C3] dark:bg-[#252945] dark:hover:bg-[#FFFFFF] dark;hover:text-[#DFE3FA] transition-all duration-200"
                             onClick={() => setIsOpenEditInvoice(true)}
@@ -102,7 +102,7 @@ const InvoiceDetails = () => {
                         </button>
                     </div>
                 </nav>
-                <article className="flex flex-col gap-2 bg-white p-8 sm:p-14 rounded-md shadow-md dark:bg-[#1E2139]">
+                <article className="flex flex-col gap-2 bg-white p-8 md:p-14 rounded-md shadow-md dark:bg-[#1E2139]">
                     <section className="flex justify-between text-[13px] text-[#7E88C3] dark:text-[#DFE3FA]">
                         <div className="flex flex-col">
                             <p className="font-semibold text-[#0C0E16] dark:text-white">
@@ -123,7 +123,7 @@ const InvoiceDetails = () => {
                             <span>{invoice.companyAddress.country}</span>
                         </div>
                     </section>
-                    <section className="flex flex-wrap sm:flex-nowrap justify-between sm:justify-start sm:gap-8 text-[13px] text-[#7E88C3] gap-4 pb-16 dark:text-[#DFE3FA]">
+                    <section className="flex flex-wrap lg:flex-nowrap justify-between sm:justify-start sm:gap-8 text-[13px] text-[#7E88C3] gap-4 pb-16 dark:text-[#DFE3FA]">
                         <div className="flex flex-col justify-between w-[calc(50%-2rem)] sm:w-[calc(30%-2rem)]">
                             <div>
                                 <span>Invoice Date</span>
@@ -199,7 +199,7 @@ const InvoiceDetails = () => {
                     </table>
                 </article>
             </section>
-            <div className="sm:hidden justify-center gap-4 flex bg-white p-4 rounded-xl shadow-md dark:bg-[#1E2139]">
+            <div className="md:hidden justify-center gap-4 flex bg-white p-4 rounded-xl shadow-md dark:bg-[#1E2139]">
                 <button
                     className="md:px-8 px-6 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#DFE3FA] hover:text-[#7E88C3] dark:bg-[#252945] dark:hover:bg-[#FFFFFF] dark;hover:text-[#DFE3FA] transition-all duration-200"
                     onClick={() => setIsOpenEditInvoice(true)}

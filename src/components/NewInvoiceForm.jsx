@@ -230,6 +230,98 @@ const NewInvoiceForm = () => {
         });
     };
 
+    const discardInvoice = () => {
+        setIsOpenNewInvoice(false);
+        setNewInvoiceData({
+            clientName: "",
+            email: "",
+            dueDate: "",
+            status: "Pending",
+            projectDescription: "",
+            items: [
+                {
+                    id: crypto.randomUUID(),
+                    name: "",
+                    quantity: 1,
+                    price: 0,
+                },
+            ],
+            clientAddress: {
+                street: "",
+                city: "",
+                postCode: "",
+                country: "",
+            },
+            companyName: "",
+            companyAddress: {
+                street: "",
+                city: "",
+                postCode: "",
+                country: "",
+            },
+            paymentTerms: "",
+        });
+    };
+
+    const handleSaveAsDraft = () => {
+        const newId = invoices.length
+            ? invoices[invoices.length - 1].id + 1
+            : 1;
+
+        const newDisplayId = `INV-00${newId}`;
+        const currentDate = new Date().toISOString().split("T")[0];
+        const items = [
+            {
+                id: crypto.randomUUID(),
+                name: "",
+                quantity: 1,
+                price: 0,
+            },
+        ];
+
+        setInvoices((prev) => [
+            ...prev,
+            {
+                ...newInvoiceData,
+                id: newId,
+                displayId: newDisplayId,
+                createdAt: currentDate,
+                status: "Draft",
+                items,
+            },
+        ]);
+        setIsOpenNewInvoice(false);
+        setNewInvoiceData({
+            clientName: "",
+            email: "",
+            dueDate: "",
+            status: "Pending",
+            projectDescription: "",
+            items: [
+                {
+                    id: crypto.randomUUID(),
+                    name: "",
+                    quantity: 1,
+                    price: 0,
+                },
+            ],
+            clientAddress: {
+                street: "",
+                city: "",
+                postCode: "",
+                country: "",
+            },
+            companyName: "",
+            companyAddress: {
+                street: "",
+                city: "",
+                postCode: "",
+                country: "",
+            },
+            paymentTerms: "",
+        });
+    };
+
     const handleSubmit = () => {
         const areEmptyFields = hasEmptyValues(newInvoiceData);
 
@@ -903,12 +995,15 @@ const NewInvoiceForm = () => {
             <div className="flex flex-nowrap justify-between fixed bottom-0 sm:left-16 md:w-[65%] lg:w-[calc(45%-15px)] w-full left-0 bg-white p-4 dark:bg-[#141625]">
                 <button
                     className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#DFE3FA] hover:text-[#7E88C3] dark:bg-[#252945] dark:hover:bg-[#FFFFFF] dark;hover:text-[#DFE3FA] transition-all duration-200"
-                    onClick={() => setIsOpenNewInvoice(false)}
+                    onClick={discardInvoice}
                 >
                     Discard
                 </button>
                 <div className="w-[60%] flex flex-nowrap justify-end gap-2">
-                    <button className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#777F98] bg-[#373B53] text-sm hover:bg-[#1E2139] transition-all duration-200 hover:text-slate-300">
+                    <button
+                        className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#777F98] bg-[#373B53] text-sm hover:bg-[#1E2139] transition-all duration-200 hover:text-slate-300"
+                        onClick={handleSaveAsDraft}
+                    >
                         Save as Draft
                     </button>
                     <button

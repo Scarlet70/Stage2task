@@ -2,6 +2,7 @@ import { ChevronDown, Plus } from "lucide-react";
 import { useState } from "react";
 import useDataContext from "../hooks/useDataContext";
 import hasEmptyValues from "../utils/utility";
+import NewItemForm from "./NewItemForm";
 import {
     isValidEmail,
     isValidName,
@@ -12,13 +13,7 @@ import {
 } from "../utils/utility";
 
 const EditInvoiceForm = ({ invoice }) => {
-    const {
-        invoices,
-        setInvoices,
-        setIsOpenEditInvoice,
-        newInvoiceData,
-        setNewInvoiceData,
-    } = useDataContext();
+    const { invoices, setInvoices, setIsOpenEditInvoice } = useDataContext();
 
     //Form Validation State
     const [isFormError, setisFormError] = useState(false);
@@ -59,25 +54,21 @@ const EditInvoiceForm = ({ invoice }) => {
     const [isDateError, setIsDateError] = useState(false);
     const [dateErrorMsg, setDateErrorMsg] = useState("");
 
-    const [EditInvoiceData, setEditInvoiceData] = useState({
+    const [editInvoiceData, setEditInvoiceData] = useState({
+        id: invoice.id,
+        displayId: invoice.displayId,
+        createdAt: invoice.createdAt,
         clientName: invoice.clientName,
         email: invoice.email,
         dueDate: invoice.dueDate,
         status: invoice.status,
         projectDescription: invoice.projectDescription,
-        items: [
-            {
-                name:
-                    invoice.items[Math.max(0, invoice.items.length - 2)]
-                        ?.name || "",
-                quantity:
-                    invoice.items[Math.max(0, invoice.items.length - 2)]
-                        ?.quantity || "",
-                price:
-                    invoice.items[Math.max(0, invoice.items.length - 2)]
-                        ?.price || "",
-            },
-        ],
+        items: invoice.items.map((item) => ({
+            id: item.id,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+        })),
         clientAddress: {
             street: invoice.clientAddress.street,
             city: invoice.clientAddress.city,
@@ -94,62 +85,94 @@ const EditInvoiceForm = ({ invoice }) => {
         paymentTerms: invoice.paymentTerms,
     });
 
-    const EditInvoice = () => {
-        const newId = invoices.length
-            ? invoices[invoices.length - 1].id + 1
-            : 1;
-
-        const newDisplayId = `INV-00${newId}`;
+    const createEditInvoice = () => {
         const currentDate = new Date().toISOString().split("T")[0];
 
-        const updatedInvoice = {
-            id: newId,
-            displayId: newDisplayId,
+        const items = editInvoiceData.items.map((item) => ({
+            id: item.id ?? crypto.randomUUID(),
+            name: item.name,
+            quantity: Number(item.quantity) || 0,
+            price: Number(item.price) || 0,
+        }));
+
+        const editedInvoice = {
+            id: editInvoiceData.id,
+            displayId: editInvoiceData.displayId,
             createdAt: currentDate,
-            clientName: newInvoiceData.clientName,
-            email: newInvoiceData.email,
-            dueDate: newInvoiceData.dueDate,
+            clientName: editInvoiceData.clientName,
+            email: editInvoiceData.email,
+            dueDate: editInvoiceData.dueDate,
             status: "Pending",
-            projectDescription: newInvoiceData.projectDescription,
+            projectDescription: editInvoiceData.projectDescription,
+            items,
+            clientAddress: {
+                street: editInvoiceData.clientAddress.street,
+                city: editInvoiceData.clientAddress.city,
+                postCode: editInvoiceData.clientAddress.postCode,
+                country: editInvoiceData.clientAddress.country,
+            },
+            companyName: editInvoiceData.companyName,
+            companyAddress: {
+                street: editInvoiceData.companyAddress.street,
+                city: editInvoiceData.companyAddress.city,
+                postCode: editInvoiceData.companyAddress.postCode,
+                country: editInvoiceData.companyAddress.country,
+            },
+            paymentTerms: editInvoiceData.paymentTerms,
+            total: evalTotal(items),
+        };
+
+        const newInvoices = [...invoices, editedInvoice];
+
+        setInvoices(newInvoices);
+        setEditInvoiceData({
+            clientName: "",
+            email: "",
+            dueDate: "",
+            status: "Pending",
+            projectDescription: "",
             items: [
                 {
-                    name:
-                        newInvoiceData.items[
-                            Math.max(0, newInvoiceData.items.length - 2)
-                        ]?.name || "",
-                    quantity:
-                        newInvoiceData.items[
-                            Math.max(0, newInvoiceData.items.length - 2)
-                        ]?.quantity || "",
-                    price:
-                        newInvoiceData.items[
-                            Math.max(0, newInvoiceData.items.length - 2)
-                        ]?.price || "",
+                    id: crypto.randomUUID(),
+                    name: "",
+                    quantity: 1,
+                    price: 0,
                 },
             ],
             clientAddress: {
-                street: newInvoiceData.clientAddress.street,
-                city: newInvoiceData.clientAddress.city,
-                postCode: newInvoiceData.clientAddress.postCode,
-                country: newInvoiceData.clientAddress.country,
+                street: "",
+                city: "",
+                postCode: "",
+                country: "",
             },
-            companyName: newInvoiceData.companyName,
+            companyName: "",
             companyAddress: {
-                street: newInvoiceData.companyAddress.street,
-                city: newInvoiceData.companyAddress.city,
-                postCode: newInvoiceData.companyAddress.postCode,
-                country: newInvoiceData.companyAddress.country,
+                street: "",
+                city: "",
+                postCode: "",
+                country: "",
             },
-            paymentTerms: newInvoiceData.paymentTerms,
-        };
+            paymentTerms: "",
+        });
+    };
 
-        updatedInvoice.total = evalTotal([...newInvoiceData.items]);
-
-        const newInvoices = [...invoices, updatedInvoice];
-
-        setInvoices(newInvoices);
-
-        console.log(updatedInvoice);
+    const handleItemChange = (id, field, value) => {
+        setEditInvoiceData((prev) => ({
+            ...prev,
+            items: prev.items.map((item) =>
+                item.id === id
+                    ? {
+                          ...item,
+                          [field]:
+                              value === undefined || value === ""
+                                  ? field === "name"
+                                      ? ""
+                                      : 0
+                                  : value,
+                      }
+                    : item,
+            ),
+        }));
     };
 
     const addNewItem = () => {
@@ -157,12 +180,13 @@ const EditInvoiceForm = ({ invoice }) => {
 
         if (
             !isValidField(
-                newInvoiceData.items[newInvoiceData.items.length - 1].name,
+                editInvoiceData.items[editInvoiceData.items.length - 1].name,
             )
         ) {
             setIsItemNameError(true);
             setItemNameErrorMsg("Enter the Item Name!");
             canAddItem = false;
+            return;
         } else {
             setIsItemNameError(false);
             setItemNameErrorMsg("");
@@ -171,12 +195,14 @@ const EditInvoiceForm = ({ invoice }) => {
 
         if (
             !isValidNumber(
-                newInvoiceData.items[newInvoiceData.items.length - 1].quantity,
+                editInvoiceData.items[editInvoiceData.items.length - 1]
+                    .quantity,
             )
         ) {
             setIsItemQtyError(true);
             setItemQtyErrorMsg("Value must be > 1");
             canAddItem = false;
+            return;
         } else {
             setIsItemQtyError(false);
             setItemQtyErrorMsg("");
@@ -185,12 +211,13 @@ const EditInvoiceForm = ({ invoice }) => {
 
         if (
             !isValidNumber(
-                newInvoiceData.items[newInvoiceData.items.length - 1].price,
+                editInvoiceData.items[editInvoiceData.items.length - 1].price,
             )
         ) {
             setIsItemPriceError(true);
             setItemPriceErrorMsg("Value must be > 1");
             canAddItem = false;
+            return;
         } else {
             setIsItemPriceError(false);
             setItemPriceErrorMsg("");
@@ -198,9 +225,14 @@ const EditInvoiceForm = ({ invoice }) => {
         }
 
         if (canAddItem) {
-            const newItem = { name: "", quantity: "", price: "", total: "" };
+            const newItem = {
+                id: crypto.randomUUID(),
+                name: "",
+                quantity: 1,
+                price: 0,
+            };
 
-            setNewInvoiceData((prev) => ({
+            setEditInvoiceData((prev) => ({
                 ...prev,
                 items: [...prev.items, newItem],
             }));
@@ -209,12 +241,61 @@ const EditInvoiceForm = ({ invoice }) => {
         return;
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const areEmptyFields = hasEmptyValues(newInvoiceData);
+    const deleteItem = (id) => {
+        setEditInvoiceData((prev) => {
+            if (prev.items.length === 1) return prev;
+
+            return {
+                ...prev,
+                items: prev.items.filter((item) => item.id !== id),
+            };
+        });
+    };
+
+    /* const cancelEdit = () => {
+        const unChangedInvoice = {
+            id: invoice.id,
+            displayId: invoice.displayId,
+            createdAt: invoice.createdAt,
+            clientName: invoice.clientName,
+            email: invoice.email,
+            dueDate: invoice.dueDate,
+            status: invoice.status,
+            projectDescription: invoice.projectDescription,
+            items: invoice.items.map((item) => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+            })),
+            clientAddress: {
+                street: invoice.clientAddress.street,
+                city: invoice.clientAddress.city,
+                postCode: invoice.clientAddress.postCode,
+                country: invoice.clientAddress.country,
+            },
+            companyName: invoice.companyName,
+            companyAddress: {
+                street: invoice.companyAddress.street,
+                city: invoice.companyAddress.city,
+                postCode: invoice.companyAddress.postCode,
+                country: invoice.companyAddress.country,
+            },
+            paymentTerms: invoice.paymentTerms,
+            total: invoice.total,
+        };
+
+        setInvoices((prev) => [
+            ...prev.filter((inv) => inv.id !== unChangedInvoice),
+            unChangedInvoice,
+        ]);
+        setIsOpenEditInvoice(false);
+    }; */
+
+    const handleSubmit = () => {
+        const areEmptyFields = hasEmptyValues(editInvoiceData);
 
         //Company Validation
-        if (!isValidName(newInvoiceData.companyName)) {
+        if (!isValidName(editInvoiceData.companyName)) {
             setisNameError(true);
             setNameErrorMsg(
                 "must be at least 3 Characters long and contain letters only",
@@ -224,7 +305,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setNameErrorMsg("");
         }
 
-        if (!isValidField(newInvoiceData.companyAddress.street)) {
+        if (!isValidField(editInvoiceData.companyAddress.street)) {
             setIsStreetError(true);
             setStreetErrorMsg("This field is required!");
         } else {
@@ -232,7 +313,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setStreetErrorMsg("");
         }
 
-        if (!isValidField(newInvoiceData.companyAddress.city)) {
+        if (!isValidField(editInvoiceData.companyAddress.city)) {
             setIsCityError(true);
             setCityErrorMsg("City is required!");
         } else {
@@ -240,7 +321,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setCityErrorMsg("");
         }
 
-        if (!isValidField(newInvoiceData.companyAddress.country)) {
+        if (!isValidField(editInvoiceData.companyAddress.country)) {
             setIsCountryError(true);
             setCountryErrorMsg("Country is required!");
         } else {
@@ -249,7 +330,7 @@ const EditInvoiceForm = ({ invoice }) => {
         }
 
         //Client Validation
-        if (!isValidName(newInvoiceData.clientName)) {
+        if (!isValidName(editInvoiceData.clientName)) {
             setisClientNameError(true);
             setClientNameErrorMsg(
                 "must be at least 3 Characters long and contain letters only",
@@ -259,7 +340,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setClientNameErrorMsg("");
         }
 
-        if (!isValidField(newInvoiceData.clientAddress.street)) {
+        if (!isValidField(editInvoiceData.clientAddress.street)) {
             setIsClientStreetError(true);
             setClientStreetErrorMsg("This field is required!");
         } else {
@@ -267,7 +348,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setClientStreetErrorMsg("");
         }
 
-        if (!isValidField(newInvoiceData.clientAddress.city)) {
+        if (!isValidField(editInvoiceData.clientAddress.city)) {
             setIsClientCityError(true);
             setClientCityErrorMsg("City is required!");
         } else {
@@ -275,7 +356,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setClientCityErrorMsg("");
         }
 
-        if (!isValidField(newInvoiceData.clientAddress.country)) {
+        if (!isValidField(editInvoiceData.clientAddress.country)) {
             setIsClientCountryError(true);
             setClientCountryErrorMsg("Country is required!");
         } else {
@@ -283,7 +364,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setClientCountryErrorMsg("");
         }
 
-        if (!isValidEmail(newInvoiceData.email)) {
+        if (!isValidEmail(editInvoiceData.email)) {
             setisEmailError(true);
             setEmailErrorMsg("Please enter a valid email!");
         } else {
@@ -291,7 +372,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setEmailErrorMsg("");
         }
 
-        if (!isValidField(newInvoiceData.dueDate)) {
+        if (!isValidField(editInvoiceData.dueDate)) {
             setIsDateError(true);
             setDateErrorMsg("Choose a Due date");
         } else {
@@ -299,7 +380,7 @@ const EditInvoiceForm = ({ invoice }) => {
             setDateErrorMsg("");
         }
 
-        if (!isValidField(newInvoiceData.paymentTerms)) {
+        if (!isValidField(editInvoiceData.paymentTerms)) {
             setIsPaymentTermsError(true);
             setPaymentTermsErrorMsg("Provide payment terms");
         } else {
@@ -308,7 +389,7 @@ const EditInvoiceForm = ({ invoice }) => {
         }
 
         //General Form Validation
-        if (!isValidField(newInvoiceData.projectDescription)) {
+        if (!isValidField(editInvoiceData.projectDescription)) {
             setIsDescError(true);
             setDescErrorMsg("This field is required!");
         } else {
@@ -319,21 +400,21 @@ const EditInvoiceForm = ({ invoice }) => {
         if (areEmptyFields) {
             setisFormError(true);
             setErrorMsg("Please fill all the required fields!");
-            console.log(newInvoiceData);
             return;
         } else {
             setisFormError(false);
             setErrorMsg("");
         }
 
-        if (hasUndefinedProp(newInvoiceData.items)) {
+        if (hasUndefinedProp(editInvoiceData.items)) {
             setInvoiceItemErrorMsg("Save a New Item to the invoice!");
             return;
         } else {
             setInvoiceItemErrorMsg("");
         }
 
-        EditInvoice();
+        createEditInvoice();
+        setIsOpenEditInvoice(false);
     };
 
     return (
@@ -348,7 +429,7 @@ const EditInvoiceForm = ({ invoice }) => {
         >
             <h2 className="font-bold text-2xl dark:text-white">
                 Edit <span className="dark:text-slate-500">#</span>
-                {invoice.displayId}
+                {editInvoiceData.displayId}
             </h2>
             <p className="text-xs text-[#7E88C3] text-center">
                 Note: all inputs with the '<span className="text-3xl">*</span>'
@@ -371,10 +452,10 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="text"
                                 id="company-name"
-                                value={newInvoiceData.companyName}
+                                value={editInvoiceData.companyName}
                                 onChange={(e) =>
-                                    setNewInvoiceData({
-                                        ...newInvoiceData,
+                                    setEditInvoiceData({
+                                        ...editInvoiceData,
                                         companyName: e.target.value,
                                     })
                                 }
@@ -396,9 +477,9 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="text"
                                 id="company-address"
-                                value={newInvoiceData.companyAddress.street}
+                                value={editInvoiceData.companyAddress.street}
                                 onChange={(e) =>
-                                    setNewInvoiceData((prev) => ({
+                                    setEditInvoiceData((prev) => ({
                                         ...prev,
                                         companyAddress: {
                                             ...prev.companyAddress,
@@ -426,9 +507,9 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="text"
                                 id="sender-city"
-                                value={newInvoiceData.companyAddress.city}
+                                value={editInvoiceData.companyAddress.city}
                                 onChange={(e) =>
-                                    setNewInvoiceData((prev) => ({
+                                    setEditInvoiceData((prev) => ({
                                         ...prev,
                                         companyAddress: {
                                             ...prev.companyAddress,
@@ -453,9 +534,9 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="text"
                                 id="sender-post-code"
-                                value={newInvoiceData.companyAddress.postCode}
+                                value={editInvoiceData.companyAddress.postCode}
                                 onChange={(e) =>
-                                    setNewInvoiceData((prev) => ({
+                                    setEditInvoiceData((prev) => ({
                                         ...prev,
                                         companyAddress: {
                                             ...prev.companyAddress,
@@ -476,9 +557,9 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="text"
                                 id="sender-country"
-                                value={newInvoiceData.companyAddress.country}
+                                value={editInvoiceData.companyAddress.country}
                                 onChange={(e) =>
-                                    setNewInvoiceData((prev) => ({
+                                    setEditInvoiceData((prev) => ({
                                         ...prev,
                                         companyAddress: {
                                             ...prev.companyAddress,
@@ -510,10 +591,10 @@ const EditInvoiceForm = ({ invoice }) => {
                         <input
                             type="text"
                             id="client-name"
-                            value={newInvoiceData.clientName}
+                            value={editInvoiceData.clientName}
                             onChange={(e) =>
-                                setNewInvoiceData({
-                                    ...newInvoiceData,
+                                setEditInvoiceData({
+                                    ...editInvoiceData,
                                     clientName: e.target.value,
                                 })
                             }
@@ -536,9 +617,9 @@ const EditInvoiceForm = ({ invoice }) => {
                             type="text"
                             id="client-email"
                             placeholder="e.g chetadev@gmail.com"
-                            value={newInvoiceData.email}
+                            value={editInvoiceData.email}
                             onChange={(e) =>
-                                setNewInvoiceData((prev) => ({
+                                setEditInvoiceData((prev) => ({
                                     ...prev,
                                     email: e.target.value,
                                 }))
@@ -561,9 +642,9 @@ const EditInvoiceForm = ({ invoice }) => {
                         <input
                             type="text"
                             id="client-address"
-                            value={newInvoiceData.clientAddress.street}
+                            value={editInvoiceData.clientAddress.street}
                             onChange={(e) =>
-                                setNewInvoiceData((prev) => ({
+                                setEditInvoiceData((prev) => ({
                                     ...prev,
                                     clientAddress: {
                                         ...prev.clientAddress,
@@ -590,9 +671,9 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="text"
                                 id="client-city"
-                                value={newInvoiceData.clientAddress.city}
+                                value={editInvoiceData.clientAddress.city}
                                 onChange={(e) =>
-                                    setNewInvoiceData((prev) => ({
+                                    setEditInvoiceData((prev) => ({
                                         ...prev,
                                         clientAddress: {
                                             ...prev.clientAddress,
@@ -617,9 +698,9 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="text"
                                 id="client-post-code"
-                                value={newInvoiceData.clientAddress.postCode}
+                                value={editInvoiceData.clientAddress.postCode}
                                 onChange={(e) =>
-                                    setNewInvoiceData((prev) => ({
+                                    setEditInvoiceData((prev) => ({
                                         ...prev,
                                         clientAddress: {
                                             ...prev.clientAddress,
@@ -640,9 +721,9 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="text"
                                 id="client-country"
-                                value={newInvoiceData.clientAddress.country}
+                                value={editInvoiceData.clientAddress.country}
                                 onChange={(e) =>
-                                    setNewInvoiceData((prev) => ({
+                                    setEditInvoiceData((prev) => ({
                                         ...prev,
                                         clientAddress: {
                                             ...prev.clientAddress,
@@ -670,10 +751,10 @@ const EditInvoiceForm = ({ invoice }) => {
                             <input
                                 type="date"
                                 id="invoice-date"
-                                value={newInvoiceData.dueDate}
+                                value={editInvoiceData.dueDate}
                                 onChange={(e) =>
-                                    setNewInvoiceData({
-                                        ...newInvoiceData,
+                                    setEditInvoiceData({
+                                        ...editInvoiceData,
                                         dueDate: e.target.value,
                                     })
                                 }
@@ -694,10 +775,10 @@ const EditInvoiceForm = ({ invoice }) => {
                             <div className="select-wrapper">
                                 <select
                                     id="payment-terms"
-                                    value={newInvoiceData.paymentTerms}
+                                    value={editInvoiceData.paymentTerms}
                                     onChange={(e) =>
-                                        setNewInvoiceData({
-                                            ...newInvoiceData,
+                                        setEditInvoiceData({
+                                            ...editInvoiceData,
                                             paymentTerms: e.target.value,
                                         })
                                     }
@@ -733,10 +814,10 @@ const EditInvoiceForm = ({ invoice }) => {
                             type="text"
                             id="project-description"
                             placeholder="e.g: Graphics Design Service"
-                            value={newInvoiceData.projectDescription}
+                            value={editInvoiceData.projectDescription}
                             onChange={(e) =>
-                                setNewInvoiceData({
-                                    ...newInvoiceData,
+                                setEditInvoiceData({
+                                    ...editInvoiceData,
                                     projectDescription: e.target.value,
                                 })
                             }
@@ -753,154 +834,20 @@ const EditInvoiceForm = ({ invoice }) => {
                         Item List
                     </h3>
                     <section className="flex flex-col gap-2">
-                        <article className="flex flex-nowrap gap-2 text-[#777F98] text-sm">
-                            <div className="input-group w-[45%]">
-                                <label
-                                    className="flex gap-2"
-                                    htmlFor="item-name"
-                                >
-                                    Item Name{" "}
-                                    <span className="text-red-700 text-sm">
-                                        *
-                                    </span>
-                                </label>
-                                <input
-                                    type="text"
-                                    id="item-name"
-                                    value={
-                                        newInvoiceData.items[
-                                            newInvoiceData.items.length - 1
-                                        ].name
-                                    }
-                                    onChange={(e) =>
-                                        setNewInvoiceData((prev) => {
-                                            const updatedItems = [
-                                                ...prev.items,
-                                            ];
-
-                                            const lastIndex =
-                                                updatedItems.length - 1;
-
-                                            updatedItems[lastIndex] = {
-                                                ...updatedItems[lastIndex],
-                                                name: e.target.value,
-                                            };
-
-                                            return {
-                                                ...prev,
-                                                items: updatedItems,
-                                            };
-                                        })
-                                    }
-                                />
-                                {isItemNameError && (
-                                    <p className="text-xs text-red-500 text-center">
-                                        {itemNameErrorMsg}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="input-group w-[15%]">
-                                <label
-                                    className="flex gap-2"
-                                    htmlFor="item-qty"
-                                >
-                                    Qty.{" "}
-                                    <span className="text-red-700 text-sm">
-                                        *
-                                    </span>
-                                </label>
-                                <input
-                                    type="number"
-                                    id="item-qty"
-                                    min={1}
-                                    value={
-                                        newInvoiceData.items[
-                                            newInvoiceData.items.length - 1
-                                        ].quantity
-                                    }
-                                    onChange={(e) =>
-                                        setNewInvoiceData((prev) => {
-                                            const updatedItems = [
-                                                ...prev.items,
-                                            ];
-
-                                            const lastIndex =
-                                                updatedItems.length - 1;
-
-                                            updatedItems[lastIndex] = {
-                                                ...updatedItems[lastIndex],
-                                                quantity: e.target.value,
-                                            };
-
-                                            return {
-                                                ...prev,
-                                                items: updatedItems,
-                                            };
-                                        })
-                                    }
-                                />
-                                {isItemQtyError && (
-                                    <p className="text-xs text-red-500 text-center">
-                                        {itemQtyErrorMsg}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="input-group w-[20%]">
-                                <label
-                                    className="flex gap-2"
-                                    htmlFor="item-price"
-                                >
-                                    Price{" "}
-                                    <span className="text-red-700 text-sm">
-                                        *
-                                    </span>
-                                </label>
-                                <input
-                                    type="number"
-                                    id="item-price"
-                                    min={1}
-                                    value={
-                                        newInvoiceData.items[
-                                            newInvoiceData.items.length - 1
-                                        ].price
-                                    }
-                                    onChange={(e) =>
-                                        setNewInvoiceData((prev) => {
-                                            const updatedItems = [
-                                                ...prev.items,
-                                            ];
-
-                                            const lastIndex =
-                                                updatedItems.length - 1;
-
-                                            updatedItems[lastIndex] = {
-                                                ...updatedItems[lastIndex],
-                                                price: e.target.value,
-                                            };
-
-                                            return {
-                                                ...prev,
-                                                items: updatedItems,
-                                            };
-                                        })
-                                    }
-                                />
-                                {isItemPriceError && (
-                                    <p className="text-xs text-red-500 text-center">
-                                        {itemPriceErrorMsg}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="input-group w-[20%]">
-                                <label htmlFor="item-total">Total</label>
-                                <input
-                                    type="text"
-                                    id="item-total"
-                                    value={evalTotal(newInvoiceData.items) || 0}
-                                    readOnly
-                                />
-                            </div>
-                        </article>
+                        {editInvoiceData.items.map((item, i) => (
+                            <NewItemForm
+                                key={item.id || i}
+                                item={item}
+                                isItemNameError={isItemNameError}
+                                isItemQtyError={isItemQtyError}
+                                isItemPriceError={isItemPriceError}
+                                itemNameErrorMsg={itemNameErrorMsg}
+                                itemPriceErrorMsg={itemPriceErrorMsg}
+                                itemQtyErrorMsg={itemQtyErrorMsg}
+                                handleItemChange={handleItemChange}
+                                deleteItem={deleteItem}
+                            />
+                        ))}
                         {invoiceItemErrorMsg !== "" && (
                             <p className="text-md text-center text-red-500">
                                 {invoiceItemErrorMsg}
@@ -912,7 +859,7 @@ const EditInvoiceForm = ({ invoice }) => {
                         onClick={addNewItem}
                     >
                         <Plus className="pb-1.5" />
-                        Save New Item
+                        Add New Item
                     </button>
                     {isFormError && (
                         <p className="text-md text-center text-red-500">

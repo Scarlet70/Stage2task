@@ -12,7 +12,6 @@ const InvoiceList = () => {
         isOpenNewInvoice,
         setIsOpenNewInvoice,
         filteredInvoices,
-        theme,
     } = useDataContext();
 
     let content = invoices.length ? (
@@ -57,7 +56,6 @@ const InvoiceList = () => {
                 </div>
             </header>
             <section className="flex flex-col gap-3">{content}</section>
-            <div id="x"></div>
 
             {isOpenNewInvoice && <NewInvoiceForm />}
         </section>
