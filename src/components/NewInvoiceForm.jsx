@@ -1,4 +1,4 @@
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import useDataContext from "../hooks/useDataContext";
 import hasEmptyValues from "../utils/utility";
@@ -217,6 +217,17 @@ const NewInvoiceForm = () => {
         }
 
         return;
+    };
+
+    const deleteItem = (id) => {
+        setNewInvoiceData((prev) => {
+            if (prev.items.length === 1) return prev;
+
+            return {
+                ...prev,
+                items: prev.items.filter((item) => item.id !== id),
+            };
+        });
     };
 
     const handleSubmit = () => {
@@ -792,7 +803,7 @@ const NewInvoiceForm = () => {
                                         </p>
                                     )}
                                 </div>
-                                <div className="input-group w-[15%]">
+                                <div className="input-group w-[10%]">
                                     <label
                                         className="flex gap-2"
                                         htmlFor="item-qty"
@@ -821,7 +832,7 @@ const NewInvoiceForm = () => {
                                         </p>
                                     )}
                                 </div>
-                                <div className="input-group w-[20%]">
+                                <div className="input-group w-[15%]">
                                     <label
                                         className="flex gap-2"
                                         htmlFor="item-price"
@@ -854,9 +865,18 @@ const NewInvoiceForm = () => {
                                     <span className="text-[#7e88c3] dark:text-[#dfe3fa]">
                                         Total
                                     </span>
-                                    <div className="h-8.75 flex items-center text-black dark:text-white bg-green-500">
+                                    <div className="h-8.75 flex items-center text-black dark:text-white">
                                         {item.quantity * item.price || 0}
                                     </div>
+                                </div>
+                                <div className="input-group w-[10%] flex flex-col justify-between max-h-13.75">
+                                    <span className="w-full h-4 block "></span>
+                                    <button
+                                        className="flex items-center"
+                                        onClick={() => deleteItem(item.id)}
+                                    >
+                                        <Trash2 className="text-[#7E88C3] dark:text-[#888EB0] hover:text-[#EC5757] transition-all duration-200" />
+                                    </button>
                                 </div>
                             </article>
                         ))}

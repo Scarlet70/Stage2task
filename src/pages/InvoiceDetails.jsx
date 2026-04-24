@@ -110,8 +110,11 @@ const InvoiceDetails = () => {
                             </p>
                             <span>{invoice.projectDescription}</span>
                         </div>
-                        <span className="font-semibold text-slate-900 dark:text-white">
-                            {invoice.companyName}
+                        <span className="">
+                            Bill From: {""}
+                            <span className="font-semibold text-slate-900 dark:text-white">
+                                {invoice.companyName}
+                            </span>
                         </span>
                         <div className="flex flex-col text-right">
                             <span>{invoice.companyAddress.street}</span>

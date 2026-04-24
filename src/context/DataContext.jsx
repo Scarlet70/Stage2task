@@ -97,7 +97,7 @@ const DataProvider = ({ children }) => {
             paymentTerms: "9 Days",
         },
     ]);
-    const [isOpenNewInvoice, setIsOpenNewInvoice] = useState(true);
+    const [isOpenNewInvoice, setIsOpenNewInvoice] = useState(false);
     const [isOpenEditInvoice, setIsOpenEditInvoice] = useState(false);
     const [newInvoiceData, setNewInvoiceData] = useState({
         clientName: "",
