@@ -18,7 +18,7 @@ const InvoiceListItem = ({ item }) => {
                 <div className="flex flex-nowrap sm:flex-row flex-col justify-between items-center text-[0.8rem] w-[calc(35%-0.5rem)]">
                     <span>£{item.total}</span>
                     <span
-                        className="flex  items-center gap-1 bg-amber-100/50 text-amber-600 sm:px-3 sm:py-1.5 px-4.5 py-2.5  rounded-lg"
+                        className="flex items-center gap-2 bg-amber-100/50 text-amber-600 sm:px-3 sm:py-1.5 px-4.5 py-2.5  rounded-lg"
                         style={{
                             color:
                                 theme === "light" && item.status === "Draft"
@@ -52,7 +52,7 @@ const InvoiceListItem = ({ item }) => {
                                             : "limegreen",
                             }}
                         ></div>
-                        {item.status}
+                        <span className="mt-1 font-bold">{item.status}</span>
                     </span>
                     <span className="sm:block hidden text-slate-400">
                         <ChevronRight />

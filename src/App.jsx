@@ -5,11 +5,14 @@ import { Routes, Route } from "react-router-dom";
 import InvoiceDetails from "./pages/InvoiceDetails";
 
 const App = () => {
-    const { isOpenNewInvoice, isOpenEditInvoice } = useDataContext();
+    const { isOpenNewInvoice, isOpenEditInvoice, isOpenConfirmDelete } =
+        useDataContext();
 
     return (
         <main className="min-h-screen sm:p-8 bg-slate-100 dark:bg-[#141625]">
-            {(isOpenNewInvoice || isOpenEditInvoice) && <PageOverlay />}
+            {(isOpenNewInvoice || isOpenEditInvoice || isOpenConfirmDelete) && (
+                <PageOverlay />
+            )}
             <Routes>
                 <Route
                     path="/"

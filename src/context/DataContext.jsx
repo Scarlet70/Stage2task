@@ -122,6 +122,8 @@ const DataProvider = ({ children }) => {
         paymentTerms: "",
     });
     const [isOpenFilter, setIsOpenFilter] = useState(false);
+    const [isOpenConfirmDelete, setIsOpenConfirmDelete] = useState(false);
+
     const [filter, setFilter] = useState("none");
     const [theme, setTheme] = useState(() => {
         return localStorage.getItem("theme") || "light";
@@ -150,6 +152,8 @@ const DataProvider = ({ children }) => {
                 setFilter,
                 theme,
                 setTheme,
+                isOpenConfirmDelete,
+                setIsOpenConfirmDelete,
             }}
         >
             {children}

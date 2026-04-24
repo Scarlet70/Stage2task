@@ -4,14 +4,16 @@ import { ArrowLeft } from "lucide-react";
 import SideBar from "../components/SideBar";
 import EditInvoiceForm from "../components/EditInvoiceForm";
 import TableRowItem from "../components/TableRowItem";
+import ConfirmDelete from "../components/ConfirmDelete";
 
 const InvoiceDetails = () => {
     const {
         invoices,
         isOpenEditInvoice,
+        isOpenConfirmDelete,
         setIsOpenEditInvoice,
-        setInvoices,
         theme,
+        setIsOpenConfirmDelete,
     } = useDataContext();
     const { id } = useParams();
     const navigate = useNavigate();
@@ -19,11 +21,6 @@ const InvoiceDetails = () => {
     const invoice = invoices?.find((inv) => inv.id === Number(id));
 
     if (!invoice) return;
-
-    const handleDelete = (id) => {
-        setInvoices((prev) => prev.filter((inv) => inv.id !== id));
-        navigate("/");
-    };
 
     return (
         <article className="flex flex-col gap-8 mx-auto sm:w-3/5 w-[90%] sm:p-8 p-4">
@@ -44,7 +41,7 @@ const InvoiceDetails = () => {
                             Status
                         </span>
                         <span
-                            className="flex items-center gap-1 bg-amber-100/50 text-amber-600 px-3 py-1.5 font-semibold rounded-lg"
+                            className="flex items-center gap-2 bg-amber-100/50 text-amber-600 px-3 py-1.5 font-semibold rounded-lg"
                             style={{
                                 color:
                                     theme === "light" &&
@@ -84,7 +81,7 @@ const InvoiceDetails = () => {
                                                 : "limegreen",
                                 }}
                             ></div>
-                            {invoice.status}
+                            <span className="mt-1">{invoice.status}</span>
                         </span>
                     </div>
                     <div className="hidden justify-end gap-2 sm:flex">
@@ -96,7 +93,7 @@ const InvoiceDetails = () => {
                         </button>
                         <button
                             className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#FFFFFF] bg-[#EC5757] text-sm hover:bg-[#FF9797] transition-all duration-200"
-                            onClick={() => handleDelete(invoice.id)}
+                            onClick={() => setIsOpenConfirmDelete(true)}
                         >
                             Delete
                         </button>
@@ -208,7 +205,7 @@ const InvoiceDetails = () => {
                 </button>
                 <button
                     className="md:px-8 px-6 py-3 rounded-4xl font-semibold text-[#FFFFFF] bg-[#EC5757] text-sm hover:bg-[#FF9797] transition-all duration-200"
-                    onClick={() => handleDelete(invoice.id)}
+                    onClick={() => setIsOpenConfirmDelete(true)}
                 >
                     Delete
                 </button>
@@ -217,6 +214,7 @@ const InvoiceDetails = () => {
                 </button>
             </div>
             {isOpenEditInvoice && <EditInvoiceForm invoice={invoice} />}
+            {isOpenConfirmDelete && <ConfirmDelete invoice={invoice} />}
         </article>
     );
 };
