@@ -33,9 +33,11 @@ const InvoiceDetails = () => {
                 </span>
             </nav>
             <section className="w-full flex flex-col gap-4">
-                <nav className="flex flex-nowrap justify-between bg-white p-4 rounded-md shadow-md">
+                <nav className="flex flex-nowrap justify-between bg-white p-4 rounded-md shadow-md dark:bg-[#1E2139]">
                     <div className="flex sm:justify-start gap-6 items-center sm:w-[40%] w-full justify-between">
-                        <span className="text-slate-400 text-sm">Status</span>
+                        <span className="text-slate-400 text-sm dark:text-[#DFE3FA]">
+                            Status
+                        </span>
                         <span
                             className="flex items-center gap-1 bg-amber-100/50 text-amber-600 px-3 py-1.5 font-semibold rounded-lg"
                             style={{
@@ -70,7 +72,7 @@ const InvoiceDetails = () => {
                     </div>
                     <div className="hidden justify-end gap-2 sm:flex">
                         <button
-                            className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#252945] hover:text-slate-300 transition-all duration-200"
+                            className="md:px-8 px-6 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#DFE3FA] hover:text-[#7E88C3] dark:bg-[#252945] dark:hover:bg-[#FFFFFF] dark;hover:text-[#DFE3FA] transition-all duration-200"
                             onClick={() => setIsOpenEditInvoice(true)}
                         >
                             Edit
@@ -86,15 +88,15 @@ const InvoiceDetails = () => {
                         </button>
                     </div>
                 </nav>
-                <article className="flex flex-col gap-2 bg-white p-8 sm:p-14 rounded-md shadow-md">
-                    <section className="flex justify-between text-[13px] text-[#7E88C3]">
+                <article className="flex flex-col gap-2 bg-white p-8 sm:p-14 rounded-md shadow-md dark:bg-[#1E2139]">
+                    <section className="flex justify-between text-[13px] text-[#7E88C3] dark:text-[#DFE3FA]">
                         <div className="flex flex-col">
-                            <p className="font-semibold text-[#0C0E16]">
+                            <p className="font-semibold text-[#0C0E16] dark:text-white">
                                 #{invoice.displayId}
                             </p>
                             <span>{invoice.projectDescription}</span>
                         </div>
-                        <span className="font-semibold text-slate-900">
+                        <span className="font-semibold text-slate-900 dark:text-white">
                             {invoice.companyName}
                         </span>
                         <div className="flex flex-col text-right">
@@ -104,24 +106,24 @@ const InvoiceDetails = () => {
                             <span>{invoice.companyAddress.country}</span>
                         </div>
                     </section>
-                    <section className="flex flex-wrap sm:flex-nowrap justify-between sm:justify-start sm:gap-8 text-[13px] text-[#7E88C3] gap-4 pb-16">
+                    <section className="flex flex-wrap sm:flex-nowrap justify-between sm:justify-start sm:gap-8 text-[13px] text-[#7E88C3] gap-4 pb-16 dark:text-[#DFE3FA]">
                         <div className="flex flex-col justify-between w-[calc(50%-2rem)] sm:w-[calc(30%-2rem)]">
                             <div>
                                 <span>Invoice Date</span>
-                                <p className="text-[0.9rem] font-bold text-[#0C0E16]">
+                                <p className="text-[0.9rem] font-bold text-[#0C0E16] dark:text-white">
                                     {invoice.createdAt}
                                 </p>
                             </div>
                             <div>
                                 <span>Payment Date</span>
-                                <p className="text-[0.9rem] font-semibold text-[#0C0E16]">
+                                <p className="text-[0.9rem] font-semibold text-[#0C0E16] dark:text-white">
                                     {invoice.dueDate}
                                 </p>
                             </div>
                         </div>
                         <div className=" flex flex-col gap-2 w-[calc(50%-2rem)] sm:w-[calc(30%-2rem)]">
                             <span>Bill To</span>
-                            <p className="text-[0.9rem] font-bold text-[#0C0E16]">
+                            <p className="text-[0.9rem] font-bold text-[#0C0E16] dark:text-white">
                                 {invoice.clientName}
                             </p>
                             <ul>
@@ -133,15 +135,15 @@ const InvoiceDetails = () => {
                         </div>
                         <div>
                             <span>Sent to</span>
-                            <p className="text-[0.9rem] font-bold text-[#0C0E16]">
+                            <p className="text-[0.9rem] font-bold text-[#0C0E16] dark:text-white">
                                 {invoice.email}
                             </p>
                         </div>
                     </section>
-                    <table className="sm:text-[13px] text-[11px] text-[#7E88C3] bg-[#F9FAFE] rounded-xl">
-                        <thead>
+                    <table className="sm:text-[13px] text-[11px] text-[#7E88C3] bg-[#F9FAFE] rounded-md dark:bg-[#252945] dark:text-white">
+                        <thead className="dark:text-[#DFE3FA]">
                             <tr>
-                                <th colSpan={2}>Item Name</th>
+                                <th colSpan={3}>Item Name</th>
                                 <th>QTY</th>
                                 <th>Price</th>
                                 <th>Total</th>
@@ -152,18 +154,19 @@ const InvoiceDetails = () => {
                                 <TableRowItem
                                     key={i}
                                     item={item}
+                                    invoice={invoice}
                                 />
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className="bg-[#373B53] text-[#FFFFFF]">
+                            <tr className="bg-[#373B53] text-[#FFFFFF] dark:bg-[#0C0E16]">
                                 <td
-                                    colSpan={4}
-                                    className="row-left rounded-bl-xl"
+                                    colSpan={5}
+                                    className="row-left rounded-bl-md"
                                 >
                                     Amount Due
                                 </td>
-                                <td className="sm:text-xl text-lg text-nowrap rounded-br-xl">
+                                <td className="sm:text-xl text-lg text-nowrap rounded-br-md">
                                     £{invoice.total}
                                 </td>
                             </tr>
@@ -171,9 +174,9 @@ const InvoiceDetails = () => {
                     </table>
                 </article>
             </section>
-            <div className="sm:hidden justify-center gap-4 flex bg-white p-4 rounded-xl shadow-md">
+            <div className="sm:hidden justify-center gap-4 flex bg-white p-4 rounded-xl shadow-md dark:bg-[#1E2139]">
                 <button
-                    className="md:px-8 px-6 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#252945] hover:text-slate-300 transition-all duration-200"
+                    className="md:px-8 px-6 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#DFE3FA] hover:text-[#7E88C3] dark:bg-[#252945] dark:hover:bg-[#FFFFFF] dark;hover:text-[#DFE3FA] transition-all duration-200"
                     onClick={() => setIsOpenEditInvoice(true)}
                 >
                     Edit

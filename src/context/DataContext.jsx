@@ -12,8 +12,15 @@ const DataProvider = ({ children }) => {
             email: "verlinprincess@gmail.com",
             status: "Pending", //draft | pending | paid
             projectDescription: "Graphic Design",
-            items: [{ name: "Brand Design", quantity: 2, price: 500 }],
-            items: [{ name: "Logo Design", quantity: 2, price: 500 }],
+            items: [
+                {
+                    name: "Brand Design",
+                    quantity: 2,
+                    price: 500,
+                    total: "1000",
+                },
+                { name: "Logo Design", quantity: 2, price: 500, total: 1000 },
+            ],
             total: 2000,
             createdAt: "2026-04-20",
             dueDate: "2026-04-25",

@@ -337,8 +337,19 @@ const EditInvoiceForm = ({ invoice }) => {
     };
 
     return (
-        <article className="sm:min-h-full bg-white sm:rounded-tr-2xl sm:rounded-br-2xl p-8 fixed sm:top-0 sm:left-16 md:w-[65%] lg:w-[45%] w-full h-[calc(100%-56px)] left-0 top-15 overflow-auto z-1000">
-            <h2 className="font-bold text-2xl">Edit #{invoice.displayId}</h2>
+        <article
+            className="sm:min-h-full bg-white sm:rounded-tr-2xl sm:rounded-br-2xl p-8 fixed sm:top-0 sm:left-16 md:w-[65%] lg:w-[45%] w-full h-[calc(100%-56px)] left-0 top-15 overflow-auto z-1000 dark:bg-[#141625]  [&::-webkit-scrollbar]:w-2
+                                            [&::-webkit-scrollbar-track]:bg-gray-200
+                                            [&::-webkit-scrollbar-thumb]:bg-gray-400
+                                            [&::-webkit-scrollbar-thumb]:rounded-full
+
+                                            dark:[&::-webkit-scrollbar-track]:bg-gray-800
+                                            dark:[&::-webkit-scrollbar-thumb]:bg-gray-600"
+        >
+            <h2 className="font-bold text-2xl dark:text-white">
+                Edit <span className="dark:text-slate-500">#</span>
+                {invoice.displayId}
+            </h2>
             <p className="text-xs text-[#7E88C3] text-center">
                 Note: all inputs with the '<span className="text-3xl">*</span>'
                 symbol are required for submission
@@ -897,7 +908,7 @@ const EditInvoiceForm = ({ invoice }) => {
                         )}
                     </section>
                     <button
-                        className="flex items-center justify-center gap-1 px-8 py-3 rounded-4xl font-semibold text-[#777F98] bg-[#F9FAFE] hover:bg-[#7C5DFA] hover:text-white transition-all duration-300"
+                        className="flex items-center justify-center gap-1 px-8 py-3 rounded-4xl font-semibold text-[#777F98] bg-[#F9FAFE] hover:bg-[#7C5DFA] hover:text-white transition-all duration-300 dark:bg-[#252945] dark:text-[#DFE3FA]"
                         onClick={addNewItem}
                     >
                         <Plus className="pb-1.5" />
@@ -910,9 +921,9 @@ const EditInvoiceForm = ({ invoice }) => {
                     )}
                 </section>
             </form>
-            <div className="w-full flex flex-nowrap justify-end gap-2 p-4 fixed bottom-0 sm:left-16 md:w-[65%] lg:w-[45%] left-0 bg-white">
+            <div className="w-[calc(100%-15px)] flex flex-nowrap justify-end gap-2 p-4 fixed bottom-0 sm:left-16 md:w-[65%] lg:w-[calc(45%-15px)] left-0 bg-white dark:bg-[#141625]">
                 <button
-                    className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#252945] hover:text-slate-300 transition-all duration-200"
+                    className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#7E88C3] bg-[#F9FAFE] text-sm hover:bg-[#252945] hover:text-slate-300 transition-all duration-200 dark:bg-[#252945]"
                     onClick={() => setIsOpenEditInvoice(false)}
                 >
                     Cancel

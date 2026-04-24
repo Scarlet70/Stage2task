@@ -1,17 +1,19 @@
 import React from "react";
 
-const TableRowItem = ({ item }) => {
+const TableRowItem = ({ item, invoice }) => {
     return (
         <tr>
             <td
-                colSpan={2}
-                className="text-[#0C0E16]"
+                colSpan={3}
+                className="text-[#0C0E16] dark:text-white"
             >
                 {item.name}
             </td>
             <td>{item.quantity}</td>
             <td>£ {item.price}</td>
-            <td className="text-[#0C0E16]">£ {item.total}</td>
+            <td className="text-[#0C0E16] dark:text-white">
+                £ {invoice.total}
+            </td>
         </tr>
     );
 };

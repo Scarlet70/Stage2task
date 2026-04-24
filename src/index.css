@@ -96,6 +96,17 @@ td {
     text-align: right;
 }
 
+.dark input,
+.dark .select-wrapper select {
+    background-color: #1e2139;
+    border: 1px solid #252945;
+    color: white;
+}
+
+.dark label {
+    color: #dfe3fa;
+}
+
 @media screen and (max-width: 600px) {
     th,
     td {
