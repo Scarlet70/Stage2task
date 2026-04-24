@@ -16,14 +16,17 @@ const StatusFilter = () => {
         <>
             <div className="relative">
                 <button
-                    className="flex flex-nowrap gap-4 border-2 border-slate-300 items-center px-4 py-1 text-sm text-slate-500"
+                    className="flex flex-nowrap gap-2 sm:gap-4 items-center px-2 sm:px-4 py-1 text-sm text-black dark:text-white"
                     onClick={() => setIsOpenFilter((prev) => !prev)}
                 >
-                    <span>Filter by Status</span>
+                    <span>
+                        Filter{" "}
+                        <span className="hidden sm:inline">by Status</span>
+                    </span>
                     <ChevronDown />
                 </button>
                 {isOpenFilter && (
-                    <div className="flex flex-col justify-around absolute -bottom-45 bg-white w-47.5 h-40.5 p-4 rounded-md shadow-2xl">
+                    <div className="flex flex-col justify-around absolute -bottom-45 bg-white w-47.5 h-40.5 p-4 rounded-md shadow-2xl dark:bg-[#252945]">
                         <label className="flex gap-4 items-center font-semibold h-[calc(33.33%)]">
                             <input
                                 className="w-5 h-5"

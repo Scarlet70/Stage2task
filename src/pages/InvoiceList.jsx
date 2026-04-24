@@ -12,6 +12,7 @@ const InvoiceList = () => {
         isOpenNewInvoice,
         setIsOpenNewInvoice,
         filteredInvoices,
+        theme,
     } = useDataContext();
 
     let content = invoices.length ? (
@@ -30,7 +31,7 @@ const InvoiceList = () => {
             <SideBar />
             <header className="flex flex-nowrap justify-between p-2">
                 <div className="dark:text-white">
-                    <h1 className="lg:text-3xl text-[1.4rem] font-bold">
+                    <h1 className="lg:text-3xl text-[1.3rem] font-bold">
                         Invoices
                     </h1>
                     <p className="sm:text-sm text-[0.7rem]">
@@ -39,20 +40,24 @@ const InvoiceList = () => {
                             : "No Invoices here"}
                     </p>
                 </div>
-                <div className="flex flex-nowrap justify-end items-center gap-2 w-[70%]">
+                <div className="flex flex-nowrap justify-end items-center gap-2 w-[60%]">
                     <StatusFilter />
                     <button
-                        className="flex flex-nowrap items-center gap-1 bg-[#7C5DFA] text-slate-200 px-2 rounded-4xl text-sm text-[0.8rem] h-10 hover:bg-[#9277FF] transition-all duration-200"
+                        className="flex flex-nowrap items-center gap-2 bg-[#7C5DFA] text-slate-200 px-2 rounded-4xl text-[1rem] font-semibold h-10 hover:bg-[#9277FF] transition-all duration-200"
                         onClick={() => {
                             setIsOpenNewInvoice(true);
                         }}
                     >
-                        <Plus className="bg-white rounded-[50%] text-[#7C5DFA] w-4 h-4" />
-                        New Invoice
+                        <Plus className="bg-white rounded-[50%] text-[#7C5DFA] w-6 h-6 p-1.5" />
+                        <span className="block mt-1">
+                            New{" "}
+                            <span className="hidden sm:inline">Invoice</span>
+                        </span>
                     </button>
                 </div>
             </header>
             <section className="flex flex-col gap-3">{content}</section>
+            <div id="x"></div>
 
             {isOpenNewInvoice && <NewInvoiceForm />}
         </section>

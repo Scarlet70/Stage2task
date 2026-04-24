@@ -6,8 +6,13 @@ import EditInvoiceForm from "../components/EditInvoiceForm";
 import TableRowItem from "../components/TableRowItem";
 
 const InvoiceDetails = () => {
-    const { invoices, isOpenEditInvoice, setIsOpenEditInvoice, setInvoices } =
-        useDataContext();
+    const {
+        invoices,
+        isOpenEditInvoice,
+        setIsOpenEditInvoice,
+        setInvoices,
+        theme,
+    } = useDataContext();
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -42,29 +47,41 @@ const InvoiceDetails = () => {
                             className="flex items-center gap-1 bg-amber-100/50 text-amber-600 px-3 py-1.5 font-semibold rounded-lg"
                             style={{
                                 color:
-                                    invoice.status === "Pending"
-                                        ? "#FF8F00"
-                                        : invoice.status === "Draft"
-                                          ? "#333"
-                                          : "limegreen",
+                                    theme === "light" &&
+                                    invoice.status === "Draft"
+                                        ? "#373B53"
+                                        : invoice.status === "Pending"
+                                          ? "#FF8F00"
+                                          : invoice.status === "Draft"
+                                            ? "#DFE3FA"
+                                            : "limegreen",
 
                                 background:
-                                    invoice.status === "Pending"
-                                        ? "#daa52023"
-                                        : invoice.status === "Draft"
-                                          ? "#33333323"
-                                          : "#32cd3228",
+                                    theme === "light" &&
+                                    invoice.status === "Draft"
+                                        ? "#373b531f"
+                                        : invoice.status === "Pending"
+                                          ? "#daa52023"
+                                          : invoice.status === "Draft"
+                                            ? "#dfe3fa1a"
+                                            : theme === "light" &&
+                                                invoice.status === "Draft"
+                                              ? "#373b531f"
+                                              : "#32cd3228",
                             }}
                         >
                             <div
                                 className="w-2 h-2 rounded-[50%] bg-amber-600"
                                 style={{
                                     background:
-                                        invoice.status === "Pending"
-                                            ? "#FF8F00"
-                                            : invoice.status === "Draft"
-                                              ? "#333"
-                                              : "limegreen",
+                                        theme === "light" &&
+                                        invoice.status === "Draft"
+                                            ? "#373B53"
+                                            : invoice.status === "Pending"
+                                              ? "#FF8F00"
+                                              : invoice.status === "Draft"
+                                                ? "#DFE3FA"
+                                                : "limegreen",
                                 }}
                             ></div>
                             {invoice.status}
@@ -141,9 +158,18 @@ const InvoiceDetails = () => {
                         </div>
                     </section>
                     <table className="sm:text-[13px] text-[11px] text-[#7E88C3] bg-[#F9FAFE] rounded-md dark:bg-[#252945] dark:text-white">
-                        <thead className="dark:text-[#DFE3FA]">
+                        <colgroup>
+                            <col
+                                span="3"
+                                style={{ width: "70%" }}
+                            />
+                            <col style={{ width: "6%" }} />
+                            <col style={{ width: "9%" }} />
+                            <col style={{ width: "15%" }} />
+                        </colgroup>
+                        <thead className="dark:text-[#DFE3FA] sm:table-header-group hidden">
                             <tr>
-                                <th colSpan={3}>Item Name</th>
+                                <th>Item Name</th>
                                 <th>QTY</th>
                                 <th>Price</th>
                                 <th>Total</th>
@@ -154,14 +180,13 @@ const InvoiceDetails = () => {
                                 <TableRowItem
                                     key={i}
                                     item={item}
-                                    invoice={invoice}
                                 />
                             ))}
                         </tbody>
                         <tfoot>
                             <tr className="bg-[#373B53] text-[#FFFFFF] dark:bg-[#0C0E16]">
                                 <td
-                                    colSpan={5}
+                                    colSpan={3}
                                     className="row-left rounded-bl-md"
                                 >
                                     Amount Due

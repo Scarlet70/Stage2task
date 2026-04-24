@@ -17,9 +17,8 @@ const DataProvider = ({ children }) => {
                     name: "Brand Design",
                     quantity: 2,
                     price: 500,
-                    total: "1000",
                 },
-                { name: "Logo Design", quantity: 2, price: 500, total: 1000 },
+                { name: "Logo Design", quantity: 2, price: 500 },
             ],
             total: 2000,
             createdAt: "2026-04-20",
@@ -47,8 +46,8 @@ const DataProvider = ({ children }) => {
             status: "Paid", //draft | pending | paid
             projectDescription: "Graphic Design",
             items: [
-                { name: "Web Design", quantity: 1, price: 500, total: 500 },
-                { name: "Flier Design", quantity: 1, price: 500, total: 500 },
+                { name: "Web Design", quantity: 1, price: 500 },
+                { name: "Flier Design", quantity: 1, price: 500 },
             ],
             total: 1000,
             createdAt: "2026-04-16",
@@ -76,8 +75,8 @@ const DataProvider = ({ children }) => {
             status: "Draft", //draft | pending | paid
             projectDescription: "Graphic Design",
             items: [
-                { name: "Web Design", quantity: 1, price: 500, total: 500 },
-                { name: "App Design", quantity: 1, price: 15000, total: 15000 },
+                { name: "Web Design", quantity: 1, price: 500 },
+                { name: "App Design", quantity: 1, price: 15000 },
             ],
             total: 15500,
             createdAt: "2026-04-16",

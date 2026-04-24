@@ -71,7 +71,7 @@ form label {
 #x {
     width: 20px;
     height: 20px;
-    background: #ffbc03;
+    background: #373b531f;
 }
 
 th,
@@ -86,6 +86,7 @@ tfoot tr td {
 td {
     text-align: center;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .row-left {
