@@ -3,8 +3,11 @@ import useDataContext from "./hooks/useDataContext";
 import PageOverlay from "./components/PageOverlay";
 import { Routes, Route } from "react-router-dom";
 import InvoiceDetails from "./pages/InvoiceDetails";
+import useTheme from "./hooks/useTheme";
 
 const App = () => {
+    const { theme } = useTheme();
+
     const { isOpenNewInvoice, isOpenEditInvoice } = useDataContext();
 
     return (
@@ -21,6 +24,7 @@ const App = () => {
                     element={<InvoiceDetails />}
                 />
             </Routes>
+            <p className="text-white text-center">{theme}</p>
         </main>
     );
 };
