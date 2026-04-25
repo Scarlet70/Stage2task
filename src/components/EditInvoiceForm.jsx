@@ -122,9 +122,11 @@ const EditInvoiceForm = ({ invoice }) => {
             total: evalTotal(items),
         };
 
-        const newInvoices = [...invoices, editedInvoice];
+        const updatedInvoices = invoices.map((invoice) =>
+            invoice.id === editedInvoice.id ? editedInvoice : invoice,
+        );
 
-        setInvoices(newInvoices);
+        setInvoices(updatedInvoices);
         setEditInvoiceData({
             clientName: "",
             email: "",
@@ -400,6 +402,7 @@ const EditInvoiceForm = ({ invoice }) => {
         if (areEmptyFields) {
             setisFormError(true);
             setErrorMsg("Please fill all the required fields!");
+            console.log(areEmptyFields);
             return;
         } else {
             setisFormError(false);
