@@ -21,7 +21,7 @@ const StatusFilter = () => {
                 >
                     <span>
                         Filter{" "}
-                        <span className="hidden sm:inline">by Status</span>
+                        <span className="hidden lg:inline">by Status</span>
                     </span>
                     <ChevronDown />
                 </button>

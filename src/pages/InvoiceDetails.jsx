@@ -9,6 +9,7 @@ import ConfirmDelete from "../components/ConfirmDelete";
 const InvoiceDetails = () => {
     const {
         invoices,
+        setInvoices,
         isOpenEditInvoice,
         isOpenConfirmDelete,
         setIsOpenEditInvoice,
@@ -22,8 +23,16 @@ const InvoiceDetails = () => {
 
     if (!invoice) return;
 
+    const handleMarkAsPaid = (id) => {
+        setInvoices((prev) =>
+            prev.map((invoice) =>
+                invoice.id === id ? { ...invoice, status: "Paid" } : invoice,
+            ),
+        );
+    };
+
     return (
-        <article className="flex flex-col gap-8 mx-auto sm:w-3/5 w-[90%] sm:p-8 p-4">
+        <article className="flex flex-col gap-8 mx-auto xl:w-3/5 w-[90%] sm:p-8 p-4">
             <SideBar />
             <nav className="flex gap-2 mt-16 sm:mt-0">
                 <span
@@ -97,7 +106,10 @@ const InvoiceDetails = () => {
                         >
                             Delete
                         </button>
-                        <button className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#FFFFFF] bg-[#7C5DFA] text-sm">
+                        <button
+                            className="md:px-8 px-4 py-3 rounded-4xl font-semibold text-[#FFFFFF] bg-[#7C5DFA] text-sm"
+                            onClick={() => handleMarkAsPaid(invoice.id)}
+                        >
                             Mark as Paid
                         </button>
                     </div>
@@ -212,7 +224,10 @@ const InvoiceDetails = () => {
                 >
                     Delete
                 </button>
-                <button className="md:px-8 px-6 py-3 rounded-4xl font-semibold text-[#FFFFFF] bg-[#7C5DFA] text-sm">
+                <button
+                    className="md:px-8 px-6 py-3 rounded-4xl font-semibold text-[#FFFFFF] bg-[#7C5DFA] text-sm"
+                    onClick={() => handleMarkAsPaid(invoice.id)}
+                >
                     Mark as Paid
                 </button>
             </div>

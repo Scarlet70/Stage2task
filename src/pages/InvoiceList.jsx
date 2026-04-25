@@ -26,17 +26,17 @@ const InvoiceList = () => {
     );
 
     return (
-        <section className="flex flex-col gap-8 mx-auto sm:w-3/5 w-[90%] sm:p-8 p-4 mt-15">
+        <section className="flex flex-col gap-8 mx-auto lg:w-3/5 w-[90%] sm:p-8 p-4 mt-15">
             <SideBar />
             <header className="flex flex-nowrap justify-between p-2">
                 <div className="dark:text-white">
-                    <h1 className="lg:text-3xl text-[1.3rem] font-bold">
+                    <h1 className="xl:text-3xl text-[1.3rem] font-bold">
                         Invoices
                     </h1>
                     <p className="sm:text-sm text-[0.7rem]">
                         {invoices.length
                             ? `There are ${invoices.length} invoices`
-                            : "No Invoices here"}
+                            : "You have no Invoices here"}
                     </p>
                 </div>
                 <div className="flex flex-nowrap justify-end items-center gap-2 w-[60%]">
@@ -50,7 +50,7 @@ const InvoiceList = () => {
                         <Plus className="bg-white rounded-[50%] text-[#7C5DFA] w-6 h-6 p-1.5" />
                         <span className="block mt-1">
                             New{" "}
-                            <span className="hidden sm:inline">Invoice</span>
+                            <span className="hidden lg:inline">Invoice</span>
                         </span>
                     </button>
                 </div>

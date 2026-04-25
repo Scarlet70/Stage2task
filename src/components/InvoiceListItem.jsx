@@ -8,11 +8,11 @@ const InvoiceListItem = ({ item }) => {
     return (
         <Link to={`/invoice/${item.id}`}>
             <article className="flex flex-nowrap justify-around bg-white p-4 rounded-xl shadow-md hover:bg-slate-100 transition-all duration-300 dark:bg-[#1E2139] dark:text-white dark:hover:bg-[#1E2139]/40">
-                <div className="text-[0.8rem] flex sm:flex-row sm:items-center flex-col flex-nowrap justify-between w-[calc(55%-2rem)]">
-                    <span className="font-semibold mb-4 sm:mb-0">
+                <div className="text-[0.8rem] flex lg:flex-row lg:items-center flex-col flex-nowrap justify-between w-[calc(55%-2rem)]">
+                    <span className="font-semibold mb-4 lg:mb-0">
                         {item.displayId}
                     </span>
-                    <span className="mb-1 sm:mb-0">{`Due ${item.dueDate}`}</span>
+                    <span className="mb-1 lg:mb-0">{`Due ${item.dueDate}`}</span>
                     <span>{item.clientName}</span>
                 </div>
                 <div className="flex flex-nowrap sm:flex-row flex-col justify-between items-center text-[0.8rem] w-[calc(35%-0.5rem)]">
